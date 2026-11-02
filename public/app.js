@@ -7,13 +7,26 @@ function fmt(n) {
   return n.toLocaleString('ru-RU') + ' \u20BD';
 }
 
+/* ==================== BRAND SVG ICONS (monochrome, gray style) ==================== */
+const ICONS = {
+  claude:
+    '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M12 1.6c.28 3.36.9 5.42 2.36 6.88 1.46 1.46 3.52 2.08 6.88 2.36v2.32c-3.36.28-5.42.9-6.88 2.36-1.46 1.46-2.08 3.52-2.36 6.88h-2.32c-.28-3.36-.9-5.42-2.36-6.88C6.86 14.06 4.8 13.44 1.44 13.16v-2.32c3.36-.28 5.42-.9 6.88-2.36C9.78 7.02 10.4 4.96 10.68 1.6H12z"/></svg>',
+  gpt:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M12 2.5l7.2 4.15v8.3L12 19.1 4.8 14.95v-8.3z"/>' +
+    '<circle cx="12" cy="10.8" r="2.4"/>' +
+    '<path d="M12 2.5v5.9M19.2 6.65l-5 2.9M19.2 14.95l-5-2.9M12 19.1v-5.9M4.8 14.95l5-2.9M4.8 6.65l5 2.9"/></svg>',
+  gemini:
+    '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M12 2c.4 4.2 1.6 6.4 4 8.8 2.4 2.4 4.6 3.6 8 4-3.4.4-5.6 1.6-8 4-2.4 2.4-3.6 4.6-4 8-.4-3.4-1.6-5.6-4-8-2.4-2.4-3.6-3.6-4-4 3.4-.4 5.6-1.6 8-4 2.4-2.4 3.6-4.6 4-8z"/></svg>',
+};
+
 /* ==================== PRODUCTS DATA ==================== */
 const PRODUCTS = [
   {
     id: 'claude',
     name: 'Claude',
-    icon: 'C',
-    iconClass: 'icon-claude',
     tagline: 'Anthropic \u00B7 \u043E\u0442 $20/\u043C\u0435\u0441',
     plans: [
       { name: 'Pro', usd: 20, desc: '\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u043D\u044B\u0435 \u043B\u0438\u043C\u0438\u0442\u044B, \u0434\u043E\u0441\u0442\u0443\u043F \u043A \u0441\u0442\u0430\u0440\u0448\u0438\u043C \u043C\u043E\u0434\u0435\u043B\u044F\u043C (\u0432\u043A\u043B\u044E\u0447\u0430\u044F Opus), \u043F\u043B\u0430\u043D\u0438\u0440\u043E\u0432\u0449\u0438\u043A \u0437\u0430\u0434\u0430\u0447, \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438 (Chrome, Office), \u043F\u0440\u043E\u0435\u043A\u0442\u044B \u0438 \u0432\u0441\u0442\u0440\u043E\u0435\u043D\u043D\u044B\u0439 Claude Code. $200/\u0433\u043E\u0434 (~$17/\u043C\u0435\u0441).' },
@@ -26,8 +39,6 @@ const PRODUCTS = [
   {
     id: 'chatgpt',
     name: 'ChatGPT',
-    icon: 'G',
-    iconClass: 'icon-gpt',
     tagline: 'OpenAI \u00B7 \u043E\u0442 $8/\u043C\u0435\u0441',
     plans: [
       { name: 'Go', usd: 8, desc: '\u0411\u044E\u0434\u0436\u0435\u0442\u043D\u044B\u0439. \u0412\u0441\u0435 \u0444\u0443\u043D\u043A\u0446\u0438\u0438 Free, \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u043D\u044B\u0435 \u043B\u0438\u043C\u0438\u0442\u044B \u043D\u0430 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F, \u0432\u044B\u0437\u043E\u0432 \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432, \u0437\u0430\u0433\u0440\u0443\u0437\u043A\u0438 \u0438 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u044B\u0435 \u0447\u0430\u0442\u044B.' },
@@ -40,8 +51,6 @@ const PRODUCTS = [
   {
     id: 'gemini',
     name: 'Gemini',
-    icon: '\u2726',
-    iconClass: 'icon-gemini',
     tagline: 'Google \u00B7 \u043E\u0442 $4.99/\u043C\u0435\u0441',
     plans: [
       { name: 'Google AI Plus', usd: 4.99, desc: '400 \u0413\u0411 \u043E\u0431\u043B\u0430\u0447\u043D\u043E\u0433\u043E \u0445\u0440\u0430\u043D\u0438\u043B\u0438\u0449\u0430, \u0441\u0435\u043C\u0435\u0439\u043D\u044B\u0439 \u0434\u043E\u0441\u0442\u0443\u043F \u0434\u043E 5 \u0447\u0435\u043B\u043E\u0432\u0435\u043A, \u0443\u0434\u0432\u043E\u0435\u043D\u043D\u044B\u0435 \u043B\u0438\u043C\u0438\u0442\u044B, \u043C\u043E\u0434\u0435\u043B\u044C Flash.' },
@@ -120,7 +129,7 @@ function renderProducts() {
     }).join('');
     return '<div class="product" data-id="' + p.id + '" style="animation-delay:' + (pi * 0.08) + 's">' +
       '<div class="product-head" data-toggle="' + p.id + '">' +
-      '<div class="product-icon ' + p.iconClass + '">' + p.icon + '</div>' +
+      '<div class="product-icon ' + p.id + '">' + ICONS[p.id] + '</div>' +
       '<div class="product-title"><h4>' + p.name + '</h4><span>' + p.tagline + '</span></div>' +
       '<div class="product-arrow">\u25BC</div></div>' +
       '<div class="product-body"><div class="plans">' + plansHtml + '</div></div></div>';
@@ -177,12 +186,11 @@ function stars(n) {
 }
 
 function reviewCard(r) {
-  const initial = r.name.charAt(0).toUpperCase();
   const badge = r.verified ? '<span class="verified-badge">\u2713</span>' : '';
   return '<div class="review"><div class="review-head"><div class="review-author">' +
-    '<div class="review-avatar">' + initial + '</div><div>' +
-    '<div class="review-name">' + r.name + badge + '</div>' +
-    '<div class="review-meta">' + r.city + ' \u00B7 ' + r.date + '</div></div></div>' +
+    '<div class="review-avatar">\u0410</div><div>' +
+    '<div class="review-name">\u0410\u043D\u043E\u043D\u0438\u043C' + badge + '</div>' +
+    '<div class="review-meta">' + r.date + '</div></div></div>' +
     '<div class="review-stars">' + stars(r.rating) + '</div></div>' +
     '<div class="review-text">' + r.text + '</div>' +
     '<span class="review-tag">' + r.product + ' \u00B7 ' + r.plan + '</span></div>';
@@ -223,7 +231,7 @@ function submitSupport() {
     closeSupport();
     document.getElementById('support-subject').value = '';
     document.getElementById('support-message').value = '';
-    showToast('\u2705 \u041E\u0431\u0440\u0430\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E!');
+    showToast('\u041E\u0431\u0440\u0430\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E');
   }, 1400);
 }
 
@@ -236,13 +244,13 @@ function openBuy(product, plan, usd, isCustom) {
   if (isCustom) {
     title.textContent = '\u0421\u0432\u044F\u0437\u0430\u0442\u044C\u0441\u044F \u0441 \u043C\u0435\u043D\u0435\u0434\u0436\u0435\u0440\u043E\u043C';
     subtitle.textContent = product + ' \u00B7 ' + plan + ' \u2014 \u0446\u0435\u043D\u0430 \u043F\u043E \u0437\u0430\u043F\u0440\u043E\u0441\u0443';
-    body.innerHTML = '<button class="btn btn-primary" id="buy-confirm" onclick="contactManager()">\u270D\uFE0F \u0421\u0432\u044F\u0437\u0430\u0442\u044C\u0441\u044F \u0432 Telegram</button>' +
+    body.innerHTML = '<button class="btn btn-primary" id="buy-confirm" onclick="contactManager()">\u0421\u0432\u044F\u0437\u0430\u0442\u044C\u0441\u044F \u0432 Telegram</button>' +
       '<div class="btn-row"><button class="btn btn-ghost" onclick="closeBuy()">\u041E\u0442\u043C\u0435\u043D\u0430</button></div>';
   } else {
     title.textContent = '\u041E\u0444\u043E\u0440\u043C\u043B\u0435\u043D\u0438\u0435 \u0437\u0430\u043A\u0430\u0437\u0430';
     subtitle.textContent = product + ' \u00B7 ' + plan + ' \u2014 ' + fmt(rub(usd));
     body.innerHTML = '<p style="margin-bottom:14px">\u041F\u043E\u0441\u043B\u0435 \u043E\u043F\u043B\u0430\u0442\u044B \u0441 \u0432\u0430\u043C\u0438 \u0441\u0432\u044F\u0436\u0443\u0442\u0441\u044F \u0434\u043B\u044F \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438.</p>' +
-      '<button class="btn btn-primary" id="buy-confirm" onclick="confirmBuy()">\uD83D\uDC8E \u041E\u043F\u043B\u0430\u0442\u0438\u0442\u044C \u0447\u0435\u0440\u0435\u0437 CryptoBot</button>' +
+      '<button class="btn btn-primary" id="buy-confirm" onclick="confirmBuy()">\u041E\u043F\u043B\u0430\u0442\u0438\u0442\u044C \u0447\u0435\u0440\u0435\u0437 CryptoBot</button>' +
       '<div class="btn-row"><button class="btn btn-ghost" onclick="closeBuy()">\u041E\u0442\u043C\u0435\u043D\u0430</button></div>';
   }
   document.getElementById('buy-overlay').classList.add('show');
@@ -291,7 +299,7 @@ async function confirmBuy() {
   } catch (e) {
     btn.disabled = false;
     btn.innerHTML = orig;
-    showToast('\u274C ' + e.message);
+    showToast(e.message);
   }
 }
 
@@ -305,7 +313,7 @@ function pollStatus(orderId) {
       const data = await res.json();
       if (data.status === 'paid') {
         clearInterval(iv);
-        showToast('\uD83C\uDF89 \u041E\u043F\u043B\u0430\u0442\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0430! \u0421 \u0432\u0430\u043C\u0438 \u0441\u0432\u044F\u0436\u0443\u0442\u0441\u044F.');
+        showToast('\u041E\u043F\u043B\u0430\u0442\u0430 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0430! \u0421 \u0432\u0430\u043C\u0438 \u0441\u0432\u044F\u0436\u0443\u0442\u0441\u044F.');
       }
     } catch (_) {}
   }, 5000);

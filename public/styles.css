@@ -293,14 +293,23 @@ body {
 .product:hover .product-icon {
   transform: rotate(-6deg) scale(1.06);
 }
+.product-icon svg {
+  width: 26px;
+  height: 26px;
+  color: #e8e8ec;
+}
 .icon-claude {
-  background: linear-gradient(145deg, #d9a066, #b87333);
+  background: linear-gradient(145deg, #2a2a2e, #1a1a1d);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .icon-gpt {
-  background: linear-gradient(145deg, #6ee7b7, #10b981);
+  background: linear-gradient(145deg, #26262a, #17171a);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .icon-gemini {
-  background: linear-gradient(145deg, #93c5fd, #3b82f6);
+  background: linear-gradient(145deg, #232327, #141416);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* monochrome tile */
 }
 .product-title {
   flex: 1;

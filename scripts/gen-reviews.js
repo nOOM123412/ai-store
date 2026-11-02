@@ -139,8 +139,6 @@ const reviews = [];
 let seed = 1337;
 for (let i = 0; i < 317; i++) {
   seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-  const name = names[seed % names.length];
-  const city = cities[(seed >> 3) % cities.length];
   const prodKeys = Object.keys(products);
   const product = prodKeys[(seed >> 5) % prodKeys.length];
   const plan = products[product][(seed >> 7) % products[product].length];
@@ -152,8 +150,6 @@ for (let i = 0; i < 317; i++) {
   const date = d.toISOString().slice(0, 10);
   reviews.push({
     id: i + 1,
-    name,
-    city,
     product,
     plan,
     rating: tpl.rating,
