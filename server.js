@@ -108,24 +108,84 @@ function setupBot(bot) {
     } catch (_) {}
   });
 
-  const webAppUrl = DOMAIN ? DOMAIN.replace(/\/$/, '') + '/app' : 'https://example.com/app';
+  // Resolve the public web app URL. Prefer env DOMAIN, fail gracefully otherwise.
+  function resolveWebAppUrl() {
+    let base = (DOMAIN || '').trim();
+    if (!base) base = (process.env.PUBLIC_URL || process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || '').trim();
+    if (base && !/^https?:\/\//i.test(base)) base = 'https://' + base;
+    if (!base) return null;
+    try {
+      const u = new URL(base.replace(/\/$/, '') + '/app');
+      if (u.protocol !== 'https:') return null;
+      return u.toString();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  const WELCOME_TEXT =
+    '👋 *Добро пожаловать в AI Store!*\n\n' +
+    'Мы — магазин премиум-подписок на лучшие AI-сервисы:\n' +
+    '• 🤖 Claude (Anthropic)\n' +
+    '• 💬 ChatGPT (OpenAI)\n' +
+    '• ✨ Gemini (Google)\n\n' +
+    '💎 Официальные планы по ценам ниже, чем напрямую.\n' +
+    '⚡ Мгновенная выдача и поддержка 24/7.\n' +
+    '🔐 Удобная и безопасная оплата.\n\n' +
+    'Нажмите кнопку ниже, чтобы открыть магазин 👇';
+
+  function welcomeKeyboard() {
+    const url = resolveWebAppUrl();
+    if (url) {
+      return {
+        inline_keyboard: [
+          [{ text: '🛍 Открыть магазин', web_app: { url } }],
+          [
+            { text: '💬 Поддержка', callback_data: 'user_support' },
+            { text: '⭐ Отзывы', callback_data: 'user_reviews' },
+          ],
+        ],
+      };
+    }
+    return {
+      inline_keyboard: [
+        [
+          { text: '💬 Поддержка', callback_data: 'user_support' },
+          { text: '⭐ Отзывы', callback_data: 'user_reviews' },
+        ],
+      ],
+    };
+  }
+
+  function syncMenuButton() {
+    const url = resolveWebAppUrl();
+    if (!url) return;
+    bot
+      .setChatMenuButton({ menu_button: { type: 'web_app', text: '🛍 Магазин', web_app: { url } } })
+      .catch(() => {});
+  }
 
   bot.onText(/\/start/, (msg) => {
-    if (isAdmin(msg)) return sendAdminPanel(msg.chat.id);
-    bot.sendMessage(
-      msg.chat.id,
-      '👋 Добро пожаловать в AI Store!\n\n' +
-        'Подписки на Claude, ChatGPT и Gemini по выгодным ценам.\n\n' +
-        '🛍 Кнопка для покупки подписок ниже:',
-      {
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: '🛍 Открыть магазин', web_app: { url: webAppUrl } }],
-          ],
-        },
-      }
-    );
+    bot
+      .sendMessage(msg.chat.id, WELCOME_TEXT, { parse_mode: 'Markdown', reply_markup: welcomeKeyboard() })
+      .then(() => syncMenuButton())
+      .catch((e) => {
+        console.error('/start send error:', e.message);
+        bot.sendMessage(msg.chat.id, 'Добро пожаловать в AI Store! Нажмите /start ещё раз.').catch(() => {});
+      });
+    if (isAdmin(msg)) sendAdminPanel(msg.chat.id);
   });
+
+  bot.on('callback_query', (q) => {
+    if (q.data === 'user_support') {
+      bot.answerCallbackQuery(q.id, { text: 'Откройте магазин и нажмите «Поддержка».', show_alert: true }).catch(() => {});
+    } else if (q.data === 'user_reviews') {
+      bot.answerCallbackQuery(q.id, { text: 'Отзывы доступны в магазине на вкладке «Отзывы».', show_alert: true }).catch(() => {});
+    }
+  });
+
+  bot.on('polling_error', (e) => console.error('polling_error:', e.message));
+  syncMenuButton();
 
   bot.onText(/\/admin/, (msg) => {
     if (!isAdmin(msg)) return;
