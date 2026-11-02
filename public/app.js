@@ -265,13 +265,11 @@ function stars(n) {
 
 function reviewCard(r) {
   const badge = r.verified ? '<span class="verified-badge">✓</span>' : '';
-  const initial = (r.name || 'А').charAt(0).toUpperCase();
-  const metaParts = [r.city, r.date].filter(Boolean).join(' · ');
   return (
     '<div class="review"><div class="review-head"><div class="review-author">' +
-    '<div class="review-avatar">' + initial + '</div><div>' +
-    '<div class="review-name">' + (r.name || 'Аноним') + badge + '</div>' +
-    '<div class="review-meta">' + metaParts + '</div></div></div>' +
+    '<div class="review-avatar">✧</div><div>' +
+    '<div class="review-name">Аноним' + badge + '</div>' +
+    '<div class="review-meta">' + r.date + '</div></div></div>' +
     '<div class="review-stars">' + stars(r.rating) + '</div></div>' +
     '<div class="review-text">' + r.text + '</div>' +
     '<span class="review-tag">' + r.product + ' · ' + r.plan + '</span></div>'
